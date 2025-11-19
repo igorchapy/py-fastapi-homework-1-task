@@ -1,11 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
+import math
 
 from database import get_db, MovieModel
+from schemas import PaginatedMoviesResponse, MovieDetailResponseSchema
 
 
 router = APIRouter()
+
 
 @router.get("/movies/", response_model=PaginatedMoviesResponse)
 async def get_movies(
@@ -21,8 +24,8 @@ async def get_movies(
     total_result = await db.execute(select(func.count()).select_from(MovieModel))
     total_items = total_result.scalar()
 
-    prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
-    next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}" \
+    prev_page = f"/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
+    next_page = f"/movies/?page={page + 1}&per_page={per_page}" \
         if offset + len(movies) < total_items else None
 
     total_pages = math.ceil(total_items / per_page)
