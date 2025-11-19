@@ -1,7 +1,6 @@
 import random
 import pytest
 from sqlalchemy import select, func
-from database import MovieModel  # Make sure you only import once from the correct place
 from src.database import MovieModel
 
 
